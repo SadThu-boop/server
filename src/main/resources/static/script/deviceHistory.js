@@ -1,29 +1,41 @@
-const deviceData = [
-    { id: '1', name: 'Air Conditioner', status: 'On', timestamp: '2024-08-28 14:00:00' },
-    { id: '2', name: 'Fan', status: 'Off', timestamp: '2024-08-28 14:15:00' },
-    { id: '3', name: 'Light Bulb', status: 'On', timestamp: '2024-08-28 14:30:00' },
-    { id: '4', name: 'Air Conditioner', status: 'Off', timestamp: '2024-08-28 14:45:00' },
-    { id: '5', name: 'Fan', status: 'On', timestamp: '2024-08-28 15:00:00' },
-    { id: '6', name: 'Light Bulb', status: 'Off', timestamp: '2024-08-28 15:15:00' },
-    { id: '7', name: 'Air Conditioner', status: 'On', timestamp: '2024-08-28 15:30:00' },
-    { id: '8', name: 'Fan', status: 'Off', timestamp: '2024-08-28 15:45:00' },
-    { id: '9', name: 'Light Bulb', status: 'On', timestamp: '2024-08-28 16:00:00' },
-    { id: '10', name: 'Air Conditioner', status: 'Off', timestamp: '2024-08-28 16:15:00' },
-    { id: '11', name: 'Fan', status: 'On', timestamp: '2024-08-28 16:30:00' },   
-    { id: '12', name: 'Light Bulb', status: 'Off', timestamp: '2024-08-28 16:45:00' },
-    { id: '13', name: 'Air Conditioner', status: 'On', timestamp: '2024-08-28 17:00:00' },
-    { id: '14', name: 'Fan', status: 'Off', timestamp: '2024-08-28 17:15:00' },
-    { id: '15', name: 'Light Bulb', status: 'On', timestamp: '2024-08-28 17:30:00' },
-    { id: '16', name: 'Air Conditioner', status: 'Off', timestamp: '2024-08-28 17:45:00' },
-    { id: '17', name: 'Fan', status: 'On', timestamp: '2024-08-28 18:00:00' },
-    { id: '18', name: 'Light Bulb', status: 'Off', timestamp: '2024-08-28 18:15:00' },
-    { id: '19', name: 'Air Conditioner', status: 'On', timestamp: '2024-08-28 18:30:00' },
-    { id: '20', name: 'Fan', status: 'Off', timestamp: '2024-08-26 18:45:00' }
-];
+//const deviceData = [
+//    { id: '1', name: 'Air Conditioner', status: 'On', timestamp: '2024-08-28 14:00:00' },
+//    { id: '2', name: 'Fan', status: 'Off', timestamp: '2024-08-28 14:15:00' },
+//    { id: '3', name: 'Light Bulb', status: 'On', timestamp: '2024-08-28 14:30:00' },
+//    { id: '4', name: 'Air Conditioner', status: 'Off', timestamp: '2024-08-28 14:45:00' },
+//    { id: '5', name: 'Fan', status: 'On', timestamp: '2024-08-28 15:00:00' },
+//    { id: '6', name: 'Light Bulb', status: 'Off', timestamp: '2024-08-28 15:15:00' },
+//    { id: '7', name: 'Air Conditioner', status: 'On', timestamp: '2024-08-28 15:30:00' },
+//    { id: '8', name: 'Fan', status: 'Off', timestamp: '2024-08-28 15:45:00' },
+//    { id: '9', name: 'Light Bulb', status: 'On', timestamp: '2024-08-28 16:00:00' },
+//    { id: '10', name: 'Air Conditioner', status: 'Off', timestamp: '2024-08-28 16:15:00' },
+//    { id: '11', name: 'Fan', status: 'On', timestamp: '2024-08-28 16:30:00' },
+//    { id: '12', name: 'Light Bulb', status: 'Off', timestamp: '2024-08-28 16:45:00' },
+//    { id: '13', name: 'Air Conditioner', status: 'On', timestamp: '2024-08-28 17:00:00' },
+//    { id: '14', name: 'Fan', status: 'Off', timestamp: '2024-08-28 17:15:00' },
+//    { id: '15', name: 'Light Bulb', status: 'On', timestamp: '2024-08-28 17:30:00' },
+//    { id: '16', name: 'Air Conditioner', status: 'Off', timestamp: '2024-08-28 17:45:00' },
+//    { id: '17', name: 'Fan', status: 'On', timestamp: '2024-08-28 18:00:00' },
+//    { id: '18', name: 'Light Bulb', status: 'Off', timestamp: '2024-08-28 18:15:00' },
+//    { id: '19', name: 'Air Conditioner', status: 'On', timestamp: '2024-08-28 18:30:00' },
+//    { id: '20', name: 'Fan', status: 'Off', timestamp: '2024-08-26 18:45:00' }
+//];
 
 let rowsPerPage = 10; // Số lượng hàng trên mỗi trang mặc định
 let currentPage = 1;
-let filteredData = deviceData; // Data after filtering
+let filteredData = []; // Data after filtering
+
+function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 
 function displayTableData(page) {
     const tableBody = document.getElementById('deviceDataTable');
@@ -34,12 +46,14 @@ function displayTableData(page) {
     const paginatedData = filteredData.slice(start, end);
 
     paginatedData.forEach((row) => {
+        const statusDisplay = row.status ? 'On' : 'Off';
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${row.id}</td>
             <td>${row.name}</td>
-            <td>${row.status}</td>
-            <td>${row.timestamp}</td>
+            <td>${statusDisplay}</td>
+            <td>${formatTimestamp(row.timestamp)}</td>
         `;
         tableBody.appendChild(tr);
     });
@@ -74,27 +88,30 @@ function updatePaginationControls() {
     });
 }
 
+// Hàm lọc theo thiết bị
 function filterByDevice() {
     const filterValue = document.getElementById('deviceFilter').value;
     if (filterValue === 'All') {
-        filteredData = deviceData;
+        filteredData = deviceData; // Nếu không lọc, sử dụng dữ liệu gốc
     } else {
-        filteredData = deviceData.filter(row => row.name === filterValue);
+        filteredData = deviceData.filter(row => row.name === filterValue); // Lọc theo tên thiết bị
     }
-    currentPage = 1; // Reset to first page
-    applyFilters();
+    currentPage = 1; // Reset về trang đầu tiên
+    applyFilters(); // Áp dụng lọc và hiển thị dữ liệu
 }
 
+// Hàm lọc theo thời gian
 function filterByTime() {
     const timeValue = document.getElementById('timeSearch').value;
-    filteredData = deviceData.filter(row => row.timestamp.includes(timeValue));
-    currentPage = 1; // Reset to first page
-    applyFilters();
+    filteredData = deviceData.filter(row => row.timestamp.includes(timeValue)); // Lọc theo thời gian
+    currentPage = 1; // Reset về trang đầu tiên
+    applyFilters(); // Áp dụng lọc và hiển thị dữ liệu
 }
 
+// Hàm áp dụng lọc và hiển thị dữ liệu
 function applyFilters() {
-    setupPagination();
-    displayTableData(currentPage);
+    setupPagination(); // Thiết lập phân trang mới
+    displayTableData(currentPage); // Hiển thị dữ liệu cho trang hiện tại
 }
 
 let isAscending = true; // Trạng thái sắp xếp (tăng dần hay giảm dần)
@@ -128,6 +145,20 @@ function changePageSize() {
     displayTableData(currentPage); // Hiển thị dữ liệu cho trang hiện tại
 }
 
-// Initial setup
-displayTableData(currentPage);
-setupPagination();
+// Hàm để lấy dữ liệu từ API Spring Boot
+function fetchDataFromAPI() {
+    fetch('/api/deviceHistory')  // Đảm bảo đường dẫn khớp với API
+        .then(response => response.json())
+        .then(data => {
+            deviceData = data; // Gán dữ liệu API vào deviceData
+            filteredData = data; // Khởi tạo filteredData với dữ liệu nhận được
+            displayTableData(currentPage);  // Hiển thị dữ liệu
+            setupPagination();  // Thiết lập phân trang
+        })
+        .catch(error => console.error('Error fetching device data:', error));
+}
+
+// Gọi hàm fetchDataFromAPI khi tải trang
+document.addEventListener('DOMContentLoaded', function () {
+    fetchDataFromAPI();
+});

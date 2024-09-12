@@ -22,117 +22,127 @@
 //    { id:'1', temperature: 26.3, humidity: 69, light: 77, timestamp: '2024-08-27 18:45:00' }
 //];
 
-// Xóa dữ liệu giả lập
-// const sensorData = [...];
+ let rowsPerPage = 10;
+ let currentPage = 1;
+ let originalData = [];  // Dữ liệu gốc từ API
+ let filteredData = [];  // Dữ liệu đã lọc
 
-let rowsPerPage = 10;
-let currentPage = 1;
-let filteredData = [];  // Dữ liệu sẽ được lấy từ API
+ function formatTimestamp(timestamp) {
+     const date = new Date(timestamp);
+     const year = date.getFullYear();
+     const month = String(date.getMonth() + 1).padStart(2, '0');
+     const day = String(date.getDate()).padStart(2, '0');
+     const hours = String(date.getHours()).padStart(2, '0');
+     const minutes = String(date.getMinutes()).padStart(2, '0');
+     const seconds = String(date.getSeconds()).padStart(2, '0');
 
-// Hàm để hiển thị dữ liệu lên bảng
-function displayTableData(page) {
-    const tableBody = document.getElementById('sensorDataTable');
-    tableBody.innerHTML = '';
+     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+ }
 
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-    const paginatedData = filteredData.slice(start, end);
+ function displayTableData(page) {
+     const tableBody = document.getElementById('sensorDataTable');
+     tableBody.innerHTML = '';
 
-    paginatedData.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${row.id}</td>
-            <td>${row.temperature}</td>
-            <td>${row.humidity}</td>
-            <td>${row.light}</td>
-            <td>${row.timestamp}</td>
-        `;
-        tableBody.appendChild(tr);
-    });
-}
+     const start = (page - 1) * rowsPerPage;
+     const end = start + rowsPerPage;
+     const paginatedData = filteredData.slice(start, end);
 
-// Thiết lập phân trang
-function setupPagination() {
-    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-    const paginationControls = document.getElementById('paginationControls');
-    paginationControls.innerHTML = '';
+     paginatedData.forEach(row => {
+         const tr = document.createElement('tr');
+         tr.innerHTML = `
+             <td>${row.id}</td>
+             <td>${row.temperature}</td>
+             <td>${row.humidity}</td>
+             <td>${row.light}</td>
+             <td>${formatTimestamp(row.timestamp)}</td>
+         `;
+         tableBody.appendChild(tr);
+     });
+ }
 
-    for (let i = 1; i <= totalPages; i++) {
-        const li = document.createElement('li');
-        li.className = 'page-item';
-        li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-        li.addEventListener('click', function () {
-            currentPage = i;
-            displayTableData(currentPage);
-            updatePaginationControls();
-        });
-        paginationControls.appendChild(li);
-    }
-    updatePaginationControls();
-}
+ function setupPagination() {
+     const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+     const paginationControls = document.getElementById('paginationControls');
+     paginationControls.innerHTML = '';
 
-function updatePaginationControls() {
-    const paginationControls = document.getElementById('paginationControls');
-    Array.from(paginationControls.children).forEach((li, index) => {
-        li.classList.remove('active');
-        if (index + 1 === currentPage) {
-            li.classList.add('active');
-        }
-    });
-}
+     for (let i = 1; i <= totalPages; i++) {
+         const li = document.createElement('li');
+         li.className = 'page-item';
+         li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+         li.addEventListener('click', function () {
+             currentPage = i;
+             displayTableData(currentPage);
+             updatePaginationControls();
+         });
+         paginationControls.appendChild(li);
+     }
+     updatePaginationControls();
+ }
 
-function changePageSize() {
-    rowsPerPage = parseInt(document.getElementById('pageSize').value);
-    currentPage = 1; // Quay lại trang đầu tiên
-    displayTableData(currentPage);
-    setupPagination();
-}
+ function updatePaginationControls() {
+     const paginationControls = document.getElementById('paginationControls');
+     Array.from(paginationControls.children).forEach((li, index) => {
+         li.classList.remove('active');
+         if (index + 1 === currentPage) {
+             li.classList.add('active');
+         }
+     });
+ }
 
-function filterByTime() {
-    const searchTime = document.getElementById('searchByTime').value.trim();
+ function changePageSize() {
+     rowsPerPage = parseInt(document.getElementById('pageSize').value);
+     currentPage = 1; // Quay lại trang đầu tiên
+     displayTableData(currentPage);
+     setupPagination();
+ }
 
-    if (searchTime) {
-        filteredData = sensorData.filter(row => row.timestamp.includes(searchTime));
-    } else {
-        filteredData = [...sensorData];  // Nếu không có tìm kiếm, reset dữ liệu
-    }
+ function filterByTime() {
+     const timeValue = document.getElementById('searchByTime').value;
+     if (!timeValue) {
+         // Nếu không có giá trị tìm kiếm, hiển thị toàn bộ dữ liệu
+         filteredData = [...originalData]; // Khôi phục dữ liệu gốc
+     } else {
+         // Lọc dữ liệu theo thời gian
+         filteredData = originalData.filter(row => row.timestamp.includes(timeValue));
+     }
+     currentPage = 1; // Reset về trang đầu tiên
+     applyFilters(); // Áp dụng lọc và hiển thị dữ liệu
+ }
 
-    currentPage = 1;
-    displayTableData(currentPage);
-    setupPagination();
-}
+ function applyFilters() {
+     setupPagination(); // Cập nhật phân trang
+     displayTableData(currentPage); // Hiển thị dữ liệu cho trang hiện tại
+ }
 
-function sortTable(column) {
-    const sortIcon = document.getElementById(`${column}SortIcon`);
-    const isAscending = sortIcon.classList.contains('bi-arrow-down');
+ function sortTable(column) {
+     const sortIcon = document.getElementById(`${column}SortIcon`);
+     const isAscending = sortIcon.classList.contains('bi-arrow-down');
 
-    filteredData.sort((a, b) => {
-        if (a[column] > b[column]) return isAscending ? 1 : -1;
-        if (a[column] < b[column]) return isAscending ? -1 : 1;
-        return 0;
-    });
+     filteredData.sort((a, b) => {
+         if (a[column] > b[column]) return isAscending ? 1 : -1;
+         if (a[column] < b[column]) return isAscending ? -1 : 1;
+         return 0;
+     });
 
-    // Đảo biểu tượng mũi tên
-    sortIcon.classList.toggle('bi-arrow-down');
-    sortIcon.classList.toggle('bi-arrow-up');
+     // Đảo biểu tượng mũi tên
+     sortIcon.classList.toggle('bi-arrow-down');
+     sortIcon.classList.toggle('bi-arrow-up');
 
-    displayTableData(currentPage);
-}
+     displayTableData(currentPage);
+ }
 
-// Hàm để lấy dữ liệu từ API Spring Boot
-function fetchDataFromAPI() {
-    fetch('/api/sensor')  // Đảm bảo đường dẫn khớp với API
-        .then(response => response.json())
-        .then(data => {
-            filteredData = data;  // Gán dữ liệu API vào filteredData
-            displayTableData(currentPage);  // Hiển thị dữ liệu
-            setupPagination();  // Thiết lập phân trang
-        })
-        .catch(error => console.error('Error fetching sensor data:', error));
-}
+ function fetchDataFromAPI() {
+     fetch('/api/sensor')  // Đảm bảo đường dẫn khớp với API
+         .then(response => response.json())
+         .then(data => {
+             originalData = data;  // Lưu dữ liệu gốc từ API
+             filteredData = [...originalData]; // Khởi tạo filteredData bằng dữ liệu gốc
+             displayTableData(currentPage);  // Hiển thị dữ liệu
+             setupPagination();  // Thiết lập phân trang
+         })
+         .catch(error => console.error('Error fetching sensor data:', error));
+ }
 
-// Gọi hàm fetchDataFromAPI khi tải trang
-document.addEventListener('DOMContentLoaded', function () {
-    fetchDataFromAPI();
-});
-
+ document.addEventListener('DOMContentLoaded', function () {
+     fetchDataFromAPI();
+ });
