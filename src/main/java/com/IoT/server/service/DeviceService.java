@@ -1,20 +1,20 @@
 package com.IoT.server.service;
 
-import com.IoT.server.entity.Device;
-import com.IoT.server.repository.DeviceRepo;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import com.IoT.server.entity.Device;
+import com.IoT.server.repository.DeviceRepo;
 
 @Service
 public class DeviceService {
     @Autowired
     private DeviceRepo deviceRepo;
+
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public Device recordDeviceStatus(String name, boolean status) {
@@ -33,6 +33,4 @@ public class DeviceService {
     public List<Device> getDeviceHistory() {
         return deviceRepo.findAll(); // Trả về toàn bộ lịch sử bật/tắt thiết bị
     }
-
-
 }

@@ -1,12 +1,13 @@
 package com.IoT.server.service;
 
-import com.IoT.server.entity.SensorData;
-import com.IoT.server.repository.SensorRepo;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.IoT.server.entity.SensorData;
+import com.IoT.server.repository.SensorRepo;
 
 @Service
 public class SensorService {
@@ -22,7 +23,6 @@ public class SensorService {
         sensorData.setTimestamp(timestamp);
 
         sensorRepo.save(sensorData); // Lưu bản ghi mới
-
     }
 
     public List<SensorData> getAllData() {

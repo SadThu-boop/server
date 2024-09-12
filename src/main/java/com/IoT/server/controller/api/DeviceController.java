@@ -1,12 +1,12 @@
 package com.IoT.server.controller.api;
 
-import com.IoT.server.entity.Device;
-import com.IoT.server.service.DeviceService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.IoT.server.entity.Device;
+import com.IoT.server.service.DeviceService;
 
 @RestController
 @RequestMapping("/api")
@@ -24,5 +24,4 @@ public class DeviceController {
     public List<Device> getDeviceHistory() {
         return deviceService.getDeviceHistory();
     }
-
 }
