@@ -1,0 +1,82 @@
+.device-card {
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  max-width: 200px; 
+}
+
+.device-card:hover {
+  transform: scale(1.05);
+}
+
+.device-icon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.device-card p {
+  margin: 0;
+  font-size: 16px;
+  color: #495057;
+}
+
+.btn-toggle {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 8px 20px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-toggle.on {
+  background-color: #28a745;
+}
+
+.btn-toggle.off {
+  background-color: #dc3545;
+}
+
+/* Fan Spin Animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Base animation classes */
+.device-icon.spin {
+  animation: spin 2s linear infinite;
+}
+
+.devices-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 20px;
+}
+
+.device-icon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+  transition: opacity 0.5s ease, transform 0.5s ease; /* Hiệu ứng chuyển đổi mượt mà */
+}
+
+.device-icon.fade-out {
+  opacity: 0;          /* Mờ dần icon */
+  transform: scale(0.8); /* Thu nhỏ icon khi mờ dần */
+}
+
+.device-icon.fade-in {
+  opacity: 1;          /* Hiển thị icon */
+  transform: scale(1); /* Phóng to icon khi xuất hiện */
+}
+

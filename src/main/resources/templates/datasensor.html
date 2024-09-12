@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Data History</title>
+    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css}" rel="stylesheet">
+    <link th:href="@{https://cdn.lineicons.com/4.0/lineicons.css}" rel="stylesheet" />
+
+    <link th:href="@{/css/siderbar.css}" rel="stylesheet" >
+    <link th:href="@{/css/style.css}" rel="stylesheet" >
+    <style>
+        th i {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+
+<body>
+<div class="wrapper">
+    <aside id="sidebar">
+        <div class="d-flex">
+            <button class="toggle-btn" type="button">
+                <i class="lni lni-grid-alt"></i>
+            </button>
+            <div class="sidebar-logo">
+                <a href="#">IoT</a>
+            </div>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="sidebar-item">
+                <a th:href="@{/home}" class="sidebar-link">
+                    <i class="lni lni-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link" onclick="showUserInfo()">
+                    <i class="lni lni-user"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                   data-bs-target="#historyDropdown" aria-expanded="false" aria-controls="historyDropdown">
+                    <i class="lni lni-layout"></i>
+                    <span>History</span>
+                </a>
+                <ul id="historyDropdown" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a th:href="@{/devicehistory}" class="sidebar-link">Device History</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a th:ref="@{/datasensor}" class="sidebar-link">Data Sensor History</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link">
+                    <i class="lni lni-cog"></i>
+                    <span>Setting</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <div id="blurBackground" class="blur-background d-none">
+        <div class="profile-card position-fixed top-50 start-50 translate-middle">
+            <button class="close-button btn btn-danger" onclick="closeUserInfo()">&times;</button>
+            <h3>User Profile</h3>
+            <p>Name: Minh</p>
+            <p>MSV: B21DCCN522</p>
+            <p>Email: dhm.hminh@gmail.com</p>
+            <p>D21CQCN06</p>
+            <a href="https://github.com/SadThu-boop/IoT.git"><p>Github Repo</p></a>
+            <a href="#">API Document</a>
+        </div>
+    </div>
+
+    <div class="main p-3">
+        <div class="row">
+
+            <!-- Main content -->
+            <div class="container d-flex justify-content-center mt-5">
+                <div class="w-100">
+                    <h2 class="text-center mb-4">Sensor Data History</h2>
+                    <table class="table table-striped mx-auto">
+                        <div class="d-flex justify-content-end mb-3">
+                            <input type="text" id="searchByTime" class="form-control" placeholder="Search by Time (e.g., 2024-08-28)" onkeyup="filterByTime()">
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <div>
+                                <label for="pageSize">Rows per page:</label>
+                                <select id="pageSize" class="form-select" style="width: 100px;" onchange="changePageSize()">
+                                    <option value="5">5</option>
+                                    <option value="10" selected>10</option>
+                                    <option value="20">20</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Temperature (°C)
+                                <i class="bi bi-arrow-down" id="temperatureSortIcon" onclick="sortTable('temperature')"></i>
+                            </th>
+                            <th scope="col">Humidity (%)
+                                <i class="bi bi-arrow-down" id="humiditySortIcon" onclick="sortTable('humidity')"></i>
+                            </th>
+                            <th scope="col">Light Intensity (%)
+                                <i class="bi bi-arrow-down" id="lightSortIcon" onclick="sortTable('light')"></i>
+                            </th>
+                            <th scope="col">Timestamp
+                                <i class="bi bi-arrow-down" id="timestampSortIcon" onclick="sortTable('timestamp')"></i>
+                            </th>
+                        </tr>
+                        </thead>
+
+
+                        <tbody id="sensorDataTable">
+                        <!-- Rows will be dynamically populated -->
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination Controls -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center" id="paginationControls">
+                            <!-- Pagination buttons will be dynamically generated -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+
+<script th:src="@{script/dataSensor.js}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script th:src="@{/script/main.js}"></script>
+
+
+
+<script>
+
+
+</script>
+
+</body>
+
+</html>

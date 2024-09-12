@@ -1,0 +1,38 @@
+#charts-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 20px;
+    padding: 20px;
+}
+
+.chart-wrapper {
+    background-color: #ffeef0; /* Màu nền nhẹ */
+    border-radius: 20px;       /* Bo tròn các góc */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+    padding: 20px;
+    height: 300px; /* Điều chỉnh chiều cao của container */
+}
+
+canvas {
+    width: 100% !important;  /* Đảm bảo canvas chiếm toàn bộ chiều rộng của container */
+    height: 100% !important; /* Chiều cao được set bằng với container */
+}
+
+.charts {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    padding-top: 0;
+}
+
+.chart {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 7px 25px rgba(0,0,0,0.08);
+    width: 100%;
+}
+
+.d-none {
+    display: none;
+}
