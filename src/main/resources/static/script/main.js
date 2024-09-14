@@ -18,23 +18,6 @@ document.getElementById('blurBackground').classList.add('d-none');
 }
 
 
-function showSelectedChart() {
-  // Ẩn tất cả các biểu đồ
-  document.getElementById('temperatureChart').classList.add('d-none');
-  document.getElementById('humidityChart').classList.add('d-none');
-  document.getElementById('lightChart').classList.add('d-none');
-
-  // Hiển thị biểu đồ được chọn
-  var selectedChart = document.getElementById('chartSelector').value;
-  if (selectedChart === 'temperature') {
-      document.getElementById('temperatureChart').classList.remove('d-none');
-  } else if (selectedChart === 'humidity') {
-      document.getElementById('humidityChart').classList.remove('d-none');
-  } else if (selectedChart === 'light') {
-      document.getElementById('lightChart').classList.remove('d-none');
-  }
-}
-
 // Hàm cập nhật thanh tiến trình nhiệt độ
 function updateTemperatureProgressBar(temperature) {
   let heightPercentage = (temperature / 100) * 100;

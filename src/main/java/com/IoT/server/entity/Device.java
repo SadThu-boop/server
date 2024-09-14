@@ -1,13 +1,16 @@
 package com.IoT.server.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import jakarta.persistence.*;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @Entity
+@RequiredArgsConstructor
 public class Device {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,5 +19,5 @@ public class Device {
     private String name;
     private boolean status;
 
-    private Date timestamp;
+    private LocalDateTime timestamp;
 }

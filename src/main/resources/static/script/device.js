@@ -1,8 +1,10 @@
 function toggleDevice(button) {
     const deviceCard = button.closest('.device-card');
     const deviceIcon = deviceCard.querySelector('.device-icon');
-    const deviceName = deviceCard.querySelector('p').textContent.toLowerCase();
+    const deviceName = deviceCard.querySelector('p').textContent.toLowerCase().trim();  // Lấy tên thiết bị và loại bỏ khoảng trắng
     let status = false;
+
+
 
     if (button.textContent === "Off") {
         button.textContent = "On";
@@ -10,16 +12,16 @@ function toggleDevice(button) {
         button.classList.add("on");
         status = true;
 
-        if (deviceName.includes("Fan")) {
+        if (deviceName.includes("fan")) {
             deviceIcon.classList.add("spin");
-        } else if (deviceName.includes("Air Conditioner")) {
+        } else if (deviceName.includes("air conditioner")) {
             deviceIcon.classList.add("fade-out");
             setTimeout(() => {
                 deviceIcon.src = "img/ac_on.svg";
                 deviceIcon.classList.remove("fade-out");
                 deviceIcon.classList.add("fade-in");
             }, 500);
-        } else if (deviceName.includes("Light Bulb")) {
+        } else if (deviceName.includes("light bulb")) {
             deviceIcon.classList.add("fade-out");
             setTimeout(() => {
                 deviceIcon.src = "img/bulb_on.svg";
@@ -52,19 +54,30 @@ function toggleDevice(button) {
         }
     }
 
+    console.log("Device Name:", deviceName);  // Thêm dòng này để kiểm tra deviceName
+    console.log("Status:", status ? "on" : "off");  // Thêm dòng này để kiểm tra status
+    const topic = "home/device/" + deviceName.replace(" ", "_");  // Thay thế khoảng trắng bằng dấu gạch dưới nếu cần
+
+
     // Gửi yêu cầu Ajax để cập nhật trạng thái thiết bị
-    fetch('/api/updateDeviceStatus', {
+    fetch('/api/device/control', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
         },
-        body: `name=${encodeURIComponent(deviceName)}&status=${encodeURIComponent(status)}`
+        body: JSON.stringify({
+            name: deviceName,  // Đảm bảo biến này chứa giá trị chính xác
+            action: status ? 'on' : 'off'
+        })
     })
-    .then(response => response.text())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.text();
+    })
     .then(data => {
-        console.log(data);
-        // Hiển thị thông báo thành công
-
+        console.log(`${deviceName} is turned ${status ? 'on' : 'off'}`);
     })
     .catch(error => console.error('Error:', error));
 
