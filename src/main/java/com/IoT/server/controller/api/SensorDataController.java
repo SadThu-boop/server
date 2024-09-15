@@ -10,7 +10,6 @@ import com.IoT.server.entity.SensorData;
 import com.IoT.server.service.SensorService;
 
 @RestController
-@CrossOrigin(origins = "http://192.168.1.17") // Thay <ESP8266_IP_Address> bằng địa chỉ IP của ESP8266
 @RequestMapping("/api")
 public class SensorDataController {
     @Autowired

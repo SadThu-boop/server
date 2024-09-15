@@ -5,6 +5,8 @@ import java.util.List;
 import com.IoT.server.controller.api.request.DeviceRequest;
 import com.IoT.server.service.MQTTService;
 
+import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import com.IoT.server.service.DeviceService;
 
 @RestController
 @RequestMapping("/api")
+@Api(value = "DeviceController", description = "Quản lý các thiết bị IoT")
 public class DeviceController {
     @Autowired
     private DeviceService deviceService;
@@ -36,12 +39,26 @@ public class DeviceController {
         }
     }
 
-
+    @Operation(summary = "Lấy danh sách thiết bị", description = "Trả về danh sách các thiết bị đã được ghi lại trong cơ sở dữ liệu")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Danh sách thiết bị được trả về thành công"),
+            @ApiResponse(code = 500, message = "Lỗi server")
+    })
     @GetMapping("/deviceHistory")
     public List<Device> getDeviceHistory() {
         return deviceService.getDeviceHistory();
     }
 
+    @ApiOperation(value = "Bật/Tắt thiết bị", notes = "Bật hoặc tắt thiết bị theo tên và hành động được cung cấp")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "deviceName", value = "Tên thiết bị (fan, ac, light)", required = true, dataType = "string", paramType = "path"),
+            @ApiImplicitParam(name = "action", value = "Hành động (on/off)", required = true, dataType = "string", paramType = "path")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Thiết bị được bật/tắt thành công"),
+            @ApiResponse(code = 400, message = "Tên thiết bị không hợp lệ"),
+            @ApiResponse(code = 500, message = "Lỗi server")
+    })
     @PostMapping("/{deviceName}/{action}")
     public String turnOnDevice(@PathVariable String deviceName, @PathVariable String action) {
         String topic = "home/device/" + deviceName;
@@ -58,6 +75,13 @@ public class DeviceController {
             return "Error turning " + action + " " + deviceName;
         }
     }
+
+    @ApiOperation(value = "Điều khiển thiết bị thông qua JSON", notes = "Nhận yêu cầu điều khiển thiết bị từ JSON và gửi lệnh qua MQTT.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Thiết bị đã được bật/tắt"),
+            @ApiResponse(code = 400, message = "Tên thiết bị không hợp lệ"),
+            @ApiResponse(code = 500, message = "Lỗi khi điều khiển thiết bị")
+    })
     @PostMapping("/device/control")
     public ResponseEntity<String> controlDevice(@RequestBody DeviceRequest deviceRequest) {
         String deviceName = mapDeviceName(deviceRequest.getName()); // ánh xạ tên thiết bị
