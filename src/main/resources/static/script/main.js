@@ -1,22 +1,3 @@
-const hamBurger = document.querySelector(".toggle-btn");
-
-hamBurger.addEventListener("click", function () {
-  document.querySelector("#sidebar").classList.toggle("expand");
-});
-
-document.querySelector('.sidebar-item a[href="#"]').addEventListener('click', function(event) {
-  event.preventDefault();
-  showUserInfo();
-});
-
-function showUserInfo() {
-document.getElementById('blurBackground').classList.remove('d-none');
-}
-
-function closeUserInfo() {
-document.getElementById('blurBackground').classList.add('d-none');
-}
-
 
 // Hàm cập nhật thanh tiến trình nhiệt độ
 function updateTemperatureProgressBar(temperature) {

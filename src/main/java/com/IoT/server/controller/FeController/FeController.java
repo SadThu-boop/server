@@ -19,4 +19,9 @@ public class FeController {
     public String sensor() {
         return "datasensor";
     }
+
+    @GetMapping("/user")
+    public String profile() {
+        return "profile";
+    }
 }
