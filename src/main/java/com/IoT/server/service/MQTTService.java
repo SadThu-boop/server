@@ -1,13 +1,14 @@
 package com.IoT.server.service;
 
+import org.eclipse.paho.client.mqttv3.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.IoT.server.entity.Device;
 import com.IoT.server.entity.SensorData;
 import com.IoT.server.repository.DeviceRepo;
 import com.IoT.server.repository.SensorRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eclipse.paho.client.mqttv3.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class MQTTService {
@@ -18,11 +19,11 @@ public class MQTTService {
     @Autowired
     private DeviceRepo deviceRepo;
 
-    private final String broker = "tcp://localhost:1883";  // Địa chỉ MQTT broker
+    private final String broker = "tcp://localhost:1883"; // Địa chỉ MQTT broker
     private final String clientId = "SpringClient";
-    private final String sensorTopic = "home/sensor/dht11";      // Topic để nhận dữ liệu từ cảm biến
-    private final String deviceTopic = "home/device/control";    // Topic để điều khiển thiết bị (đèn LED)
-    private MqttClient mqttClient;                               // Khởi tạo MqttClient ở cấp độ class để dùng chung
+    private final String sensorTopic = "data/sensor"; // Topic để nhận dữ liệu từ cảm biến
+    private final String deviceTopic = "home/device/control"; // Topic để điều khiển thiết bị (đèn LED)
+    private MqttClient mqttClient; // Khởi tạo MqttClient ở cấp độ class để dùng chung
 
     public MQTTService() throws MqttException {
         mqttClient = new MqttClient(broker, clientId);
@@ -73,7 +74,7 @@ public class MQTTService {
             String payload = objectMapper.writeValueAsString(device);
             MqttMessage message = new MqttMessage(payload.getBytes());
             message.setQos(1);
-            mqttClient.publish(deviceTopic, message);  // Gửi dữ liệu điều khiển đến thiết bị
+            mqttClient.publish(deviceTopic, message); // Gửi dữ liệu điều khiển đến thiết bị
             System.out.println("Published control message: " + payload);
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,8 +84,8 @@ public class MQTTService {
     // Hàm publish để gửi lệnh điều khiển các thiết bị qua MQTT
     public void publish(String topic, String payload) throws MqttException {
         MqttMessage message = new MqttMessage(payload.getBytes());
-        message.setQos(1);  // QoS 1: Đảm bảo rằng tin nhắn được gửi ít nhất một lần
-        mqttClient.publish(topic, message);  // Gửi tin nhắn đến topic được chỉ định
+        message.setQos(1); // QoS 1: Đảm bảo rằng tin nhắn được gửi ít nhất một lần
+        mqttClient.publish(topic, message); // Gửi tin nhắn đến topic được chỉ định
         System.out.println("Published message to topic " + topic + ": " + payload);
     }
 }

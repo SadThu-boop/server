@@ -34,7 +34,7 @@ public class DeviceService {
         return dateFormat.format(actionTime); // Định dạng thời gian theo YYYY/MM/DD HH:MM:SS
     }
 
-    public void recordDeviceHistory(String deviceName,boolean status) {
+    public void recordDeviceHistory(String deviceName, boolean status) {
         Device device = new Device();
         device.setName(deviceName);
         device.setStatus(status);
