@@ -8,17 +8,30 @@ function updateTemperatureProgressBar(temperature) {
 
   tempBarFill.style.height = heightPercentage + '%';
   temperatureDisplay.textContent = temperature + '°C';
+
+  if(temperature > 40) {
+    tempBarFill.style.backgroundColor = '#FF3632';
+  } else {
+    tempBarFill.style.backgroundColor = '#f8d7da';
+  }
 }
 
 // Hàm cập nhật thanh tiến trình độ ẩm
-function updateHumidityProgressBar(percent) {
-  let heightPercentage = (percent / 100) * 100;
+function updateHumidityProgressBar(humidity) {
+  let heightPercentage = (humidity / 100) * 100;
 
   const humidBarFill = document.getElementById('humidBarFill');
   const humidityDisplay = document.getElementById('humidityDisplay');
 
   humidBarFill.style.height = heightPercentage + '%';
-  humidityDisplay.textContent = percent + '%';
+  humidityDisplay.textContent = humidity + '%';
+
+  if(humidity > 70) {
+    humidBarFill.style.backgroundColor = '#01579B';
+  } else {
+    humidBarFill.style.backgroundColor = '#d1ecf1';
+  }
+
 }
 
 // Hàm cập nhật thanh tiến trình ánh sáng
@@ -30,6 +43,12 @@ function updateLightProgressBar(lux) {
 
   lightBarFill.style.height = heightPercentage + '%';
   lightDisplay.textContent = lux + ' lux';
+
+  if(lux > 800) {
+    lightBarFill.style.backgroundColor = '#ffb400';
+  } else {
+    lightBarFill.style.backgroundColor = '#cce5ff';
+  }
 }
 
 // Hàm lấy dữ liệu từ API và cập nhật thanh tiến trình
@@ -50,5 +69,5 @@ document.addEventListener('DOMContentLoaded', function() {
   fetchSensorData();  // Lấy dữ liệu khi trang tải
 
   // Tùy chọn: Lấy dữ liệu mới sau mỗi vài giây (ví dụ, mỗi 10 giây)
-  setInterval(fetchSensorData, 5000);  // Lấy dữ liệu mỗi 10 giây
+  setInterval(fetchSensorData, 1000);  // Lấy dữ liệu mỗi 10 giây
 });
