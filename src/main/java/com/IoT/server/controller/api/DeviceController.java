@@ -47,15 +47,40 @@ public class DeviceController {
     }
 
     @Operation(summary = "Bật/Tắt thiết bị", description = "Bật hoặc tắt thiết bị theo tên và hành động được cung cấp")
-    @PostMapping("/{deviceName}/{action}")
-    public String turnOnDevice(@PathVariable String deviceName, @PathVariable String action) throws MqttException {
+    @PutMapping("/{deviceName}/{action}")
+    public ResponseEntity<String> turnOnDevice(@PathVariable String deviceName, @PathVariable String action) throws MqttException {
+        // Validate deviceName parameter
+        if (deviceName == null || deviceName.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Device name cannot be empty.");
+        }
+
+        // Add any further checks on deviceName validity if necessary
+        if (!isValidDeviceName(deviceName)) {
+            return ResponseEntity.badRequest().body("Invalid device name provided.");
+        }
+
+        // Validate action parameter
+        if (!"on".equalsIgnoreCase(action) && !"off".equalsIgnoreCase(action)) {
+            return ResponseEntity.badRequest().body("Invalid action: must be 'on' or 'off'.");
+        }
+
         String topic = "home/device/" + deviceName;
         boolean status = "on".equalsIgnoreCase(action);
 
+        // Publish to MQTT and record device history
         mqttService.publish(topic, action);
         deviceService.recordDeviceHistory(deviceName, status);
-        return deviceName + " is turned " + action;
+
+        return ResponseEntity.ok(deviceName + " is turned " + action);
     }
+
+    // Helper method to validate device name format or check against allowed device names
+    private boolean isValidDeviceName(String deviceName) {
+        // Add logic to validate device names, e.g., matching a regex pattern, or checking against a list of valid device names.
+        return deviceName.matches("^[a-zA-Z0-9_-]+$"); // Example: only letters, numbers, hyphens, and underscores allowed
+    }
+
+
 
     @Operation(
             summary = "Điều khiển thiết bị thông qua JSON",
