@@ -42,3 +42,15 @@ Dự án sử dụng:
  - BH1750
    
  ![BH1750](https://i.imgur.com/LJMSY37b.jpg)
+
+ 
+## Cài đặt
+
+Cài đặt dự án thông qua github
+
+```cmd
+  git clone https://github.com/SadThu-boop/server.git
+  cd server
+```
+config pom file của dự án 
+    
