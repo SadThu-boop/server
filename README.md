@@ -33,11 +33,11 @@ Dự án sử dụng:
  Sử dụng Arduino IDE để nạp code cho 3 thiết bị lấy thông tin về nhiệt dộ, ánh sáng và độ ẩm của phòng.
 - ESP8266
   
- ![ESP8266](https://i.imgur.com/dfNIDLR.jpg)
+ ![ESP8266](https://i.imgur.com/dfNIDLRb.jpg)
 
  - DHT11
    
- ![DHT11](https://i.imgur.com/0BTInuZ.jpg)
+ ![DHT11](https://i.imgur.com/0BTInuZb.jpg)
 
  - BH1750
    
