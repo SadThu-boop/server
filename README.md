@@ -1,5 +1,8 @@
 # IoT Project
-Dự án IoT trên trường xây dựng kiểm soát nhà thông minh thu thập thông tin về nhiệt độ, độ ẩm và ánh sáng trong nhà. Điều khiển ba thiết bị: quạt, điều hòa và bóng đèn. Dự án được chia làm 2 phần: phần cứng, phần mềm. 
+Dự án IoT trên trường xây dựng kiểm soát nhà thông minh thu thập thông tin về nhiệt độ, độ ẩm và ánh sáng trong nhà. Điều khiển ba thiết bị: quạt, điều hòa và bóng đèn. Dự án được chia làm 2 phần:
+- Phần cứng
+- Phần mềm
+  
 ![IoT](https://i.imgur.com/xsoRQnb.jpg)
 
 
