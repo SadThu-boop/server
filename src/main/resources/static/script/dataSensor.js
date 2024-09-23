@@ -1,148 +1,185 @@
-// Example data - 20 rows
-//const sensorData = [
-//    { id:'1', temperature: 24.1, humidity: 61, light: 72, timestamp: '2024-08-28 14:00:00' },
-//    { id:'1', temperature: 24.3, humidity: 60, light: 70, timestamp: '2024-08-28 14:15:00' },
-//    { id:'1', temperature: 24.5, humidity: 59, light: 75, timestamp: '2024-08-28 14:30:00' },
-//    { id:'1', temperature: 24.8, humidity: 62, light: 80, timestamp: '2024-08-28 14:45:00' },
-//    { id:'1', temperature: 25.0, humidity: 64, light: 68, timestamp: '2024-08-28 15:00:00' },
-//    { id:'1', temperature: 24.6, humidity: 63, light: 76, timestamp: '2024-08-28 15:15:00' },
-//    { id:'1', temperature: 24.7, humidity: 61, light: 73, timestamp: '2024-08-28 15:30:00' },
-//    { id:'1', temperature: 24.9, humidity: 60, light: 79, timestamp: '2024-08-28 15:45:00' },
-//    { id:'1', temperature: 25.1, humidity: 65, light: 77, timestamp: '2024-08-28 16:00:00' },
-//    { id:'1', temperature: 25.3, humidity: 66, light: 74, timestamp: '2024-08-28 16:15:00' },
-//    { id:'1', temperature: 25.2, humidity: 64, light: 70, timestamp: '2024-08-28 16:30:00' },
-//    { id:'1', temperature: 25.4, humidity: 67, light: 72, timestamp: '2024-08-28 16:45:00' },
-//    { id:'1', temperature: 25.5, humidity: 68, light: 69, timestamp: '2024-08-28 17:00:00' },
-//    { id:'1', temperature: 25.6, humidity: 66, light: 71, timestamp: '2024-08-28 17:15:00' },
-//    { id:'1', temperature: 25.7, humidity: 67, light: 73, timestamp: '2024-08-28 17:30:00' },
-//    { id:'1', temperature: 25.8, humidity: 65, light: 78, timestamp: '2024-08-28 17:45:00' },
-//    { id:'1', temperature: 26.0, humidity: 64, light: 74, timestamp: '2024-08-28 18:00:00' },
-//    { id:'1', temperature: 26.1, humidity: 66, light: 75, timestamp: '2024-08-28 18:15:00' },
-//    { id:'1', temperature: 26.2, humidity: 68, light: 76, timestamp: '2024-07-26 18:30:00' },
-//    { id:'1', temperature: 26.3, humidity: 69, light: 77, timestamp: '2024-08-27 18:45:00' }
-//];
+let rowsPerPage = 10;
+let currentPage = 1;
+let originalData = [];  // Original data from API
+let filteredData = [];  // Filtered data
 
- let rowsPerPage = 10;
- let currentPage = 1;
- let originalData = [];  // Dữ liệu gốc từ API
- let filteredData = [];  // Dữ liệu đã lọc
+// Function to format timestamps
+function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
 
- function formatTimestamp(timestamp) {
-     const date = new Date(timestamp);
-     const year = date.getFullYear();
-     const month = String(date.getMonth() + 1).padStart(2, '0');
-     const day = String(date.getDate()).padStart(2, '0');
-     const hours = String(date.getHours()).padStart(2, '0');
-     const minutes = String(date.getMinutes()).padStart(2, '0');
-     const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 
-     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
- }
+// Function to display table data based on the current page
+function displayTableData(page) {
+    const tableBody = document.getElementById('sensorDataTable');
+    tableBody.innerHTML = '';
 
- function displayTableData(page) {
-     const tableBody = document.getElementById('sensorDataTable');
-     tableBody.innerHTML = '';
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const paginatedData = filteredData.slice(start, end);
 
-     const start = (page - 1) * rowsPerPage;
-     const end = start + rowsPerPage;
-     const paginatedData = filteredData.slice(start, end);
+    paginatedData.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${row.id}</td>
+            <td>${row.temperature}</td>
+            <td>${row.humidity}</td>
+            <td>${row.light}</td>
+            <td>${formatTimestamp(row.timestamp)}</td>
+        `;
+        tableBody.appendChild(tr);
+    });
+}
 
-     paginatedData.forEach(row => {
-         const tr = document.createElement('tr');
-         tr.innerHTML = `
-             <td>${row.id}</td>
-             <td>${row.temperature}</td>
-             <td>${row.humidity}</td>
-             <td>${row.light}</td>
-             <td>${formatTimestamp(row.timestamp)}</td>
-         `;
-         tableBody.appendChild(tr);
-     });
- }
+// Function to setup pagination controls
+function setupPagination() {
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+    const paginationControls = document.getElementById('paginationControls');
+    paginationControls.innerHTML = '';
 
- function setupPagination() {
-     const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-     const paginationControls = document.getElementById('paginationControls');
-     paginationControls.innerHTML = '';
+    for (let i = 1; i <= totalPages; i++) {
+        const li = document.createElement('li');
+        li.className = 'page-item';
+        li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+        li.addEventListener('click', function () {
+            changePage(i);
+        });
+        paginationControls.appendChild(li);
+    }
+    updatePaginationControls();
+}
 
-     for (let i = 1; i <= totalPages; i++) {
-         const li = document.createElement('li');
-         li.className = 'page-item';
-         li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-         li.addEventListener('click', function () {
-             currentPage = i;
-             displayTableData(currentPage);
-             updatePaginationControls();
-         });
-         paginationControls.appendChild(li);
-     }
-     updatePaginationControls();
- }
+// Function to change page, display data, and update URL
+function changePage(pageNumber) {
+    currentPage = pageNumber;
+    displayTableData(currentPage);
+    updatePaginationControls();
+    updateURLWithPageNumber(currentPage); // Update the URL with the current page number
+}
 
- function updatePaginationControls() {
-     const paginationControls = document.getElementById('paginationControls');
-     Array.from(paginationControls.children).forEach((li, index) => {
-         li.classList.remove('active');
-         if (index + 1 === currentPage) {
-             li.classList.add('active');
-         }
-     });
- }
+// Function to update the URL with the current page number as a parameter
+function updateURLWithPageNumber(pageNumber) {
+    const url = new URL(window.location);
+    url.searchParams.set('page', pageNumber); // Set the 'page' parameter in the URL
+    window.history.pushState({ page: pageNumber }, '', url); // Update the URL without reloading the page
+}
 
- function changePageSize() {
-     rowsPerPage = parseInt(document.getElementById('pageSize').value);
-     currentPage = 1; // Quay lại trang đầu tiên
-     displayTableData(currentPage);
-     setupPagination();
- }
+// Function to update pagination controls highlighting the current page
+function updatePaginationControls() {
+    const paginationControls = document.getElementById('paginationControls');
+    Array.from(paginationControls.children).forEach((li, index) => {
+        li.classList.remove('active');
+        if (index + 1 === currentPage) {
+            li.classList.add('active');
+        }
+    });
+}
 
- function filterByTime() {
-     const timeValue = document.getElementById('searchByTime').value;
-     if (!timeValue) {
-         // Nếu không có giá trị tìm kiếm, hiển thị toàn bộ dữ liệu
-         filteredData = [...originalData]; // Khôi phục dữ liệu gốc
-     } else {
-         // Lọc dữ liệu theo thời gian
-         filteredData = originalData.filter(row => row.timestamp.includes(timeValue));
-     }
-     currentPage = 1; // Reset về trang đầu tiên
-     applyFilters(); // Áp dụng lọc và hiển thị dữ liệu
- }
+// Function to change the number of rows per page and reset pagination
+function changePageSize() {
+    rowsPerPage = parseInt(document.getElementById('pageSize').value);
+    currentPage = 1; // Reset to first page
+    displayTableData(currentPage);
+    setupPagination();
+}
 
- function applyFilters() {
-     setupPagination(); // Cập nhật phân trang
-     displayTableData(currentPage); // Hiển thị dữ liệu cho trang hiện tại
- }
+// Function to filter data by time and update display
+function filterByTime() {
+    const timeValue = document.getElementById('searchByTime').value;
+    if (!timeValue) {
+        filteredData = [...originalData]; // Restore original data
+    } else {
+        filteredData = originalData.filter(row => row.timestamp.includes(timeValue));
+    }
+    currentPage = 1; // Reset to first page
+    applyFilters();
+}
 
- function sortTable(column) {
-     const sortIcon = document.getElementById(`${column}SortIcon`);
-     const isAscending = sortIcon.classList.contains('bi-arrow-down');
+// Function to apply filters and update pagination
+function applyFilters() {
+    setupPagination(); // Update pagination
+    displayTableData(currentPage); // Display data for the current page
+}
 
-     filteredData.sort((a, b) => {
-         if (a[column] > b[column]) return isAscending ? 1 : -1;
-         if (a[column] < b[column]) return isAscending ? -1 : 1;
-         return 0;
-     });
+// Function to filter data based on the selected search type and input
+function filterData() {
+    const searchType = document.getElementById('searchType').value;
+    const searchValue = document.getElementById('searchInput').value.toLowerCase();
 
-     // Đảo biểu tượng mũi tên
-     sortIcon.classList.toggle('bi-arrow-down');
-     sortIcon.classList.toggle('bi-arrow-up');
+    filteredData = originalData.filter(row => {
+        let cellValue;
+        switch (searchType) {
+            case 'time':
+                cellValue = row.timestamp;
+                break;
+            case 'temperature':
+                cellValue = row.temperature.toString();
+                break;
+            case 'humidity':
+                cellValue = row.humidity.toString();
+                break;
+            case 'light':
+                cellValue = row.light.toString();
+                break;
+        }
+        return cellValue.toLowerCase().includes(searchValue);
+    });
 
-     displayTableData(currentPage);
- }
+    currentPage = 1; // Reset to first page
+    applyFilters(); // Apply filtering and update display
+}
 
- function fetchDataFromAPI() {
-     fetch('/api/sensor')  // Đảm bảo đường dẫn khớp với API
-         .then(response => response.json())
-         .then(data => {
-             originalData = data;  // Lưu dữ liệu gốc từ API
-             filteredData = [...originalData]; // Khởi tạo filteredData bằng dữ liệu gốc
-             displayTableData(currentPage);  // Hiển thị dữ liệu
-             setupPagination();  // Thiết lập phân trang
-         })
-         .catch(error => console.error('Error fetching sensor data:', error));
- }
+// Function to sort table data based on a selected column
+function sortTable(column) {
+    const sortIcon = document.getElementById(`${column}SortIcon`);
+    const isAscending = sortIcon.classList.contains('bi-arrow-down');
 
- document.addEventListener('DOMContentLoaded', function () {
-     fetchDataFromAPI();
- });
+    filteredData.sort((a, b) => {
+        if (a[column] > b[column]) return isAscending ? 1 : -1;
+        if (a[column] < b[column]) return isAscending ? -1 : 1;
+        return 0;
+    });
+
+    // Toggle the sorting icon
+    sortIcon.classList.toggle('bi-arrow-down');
+    sortIcon.classList.toggle('bi-arrow-up');
+
+    displayTableData(currentPage);
+}
+
+// Function to fetch data from API and initialize table
+function fetchDataFromAPI() {
+    fetch('/api/sensor')  // Ensure the path matches your API endpoint
+        .then(response => response.json())
+        .then(data => {
+            originalData = data;  // Store the original data from the API
+            filteredData = [...originalData]; // Initialize filteredData with original data
+            displayTableData(currentPage);  // Display the data
+            setupPagination();  // Setup pagination controls
+        })
+        .catch(error => console.error('Error fetching sensor data:', error));
+}
+
+// Function to initialize the page based on the URL parameters
+function initializePageFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageParam = urlParams.get('page');
+
+    // If a page parameter exists, use it; otherwise, default to page 1
+    currentPage = pageParam ? parseInt(pageParam, 10) : 1;
+    displayTableData(currentPage);
+    setupPagination();
+}
+
+// Initialize the data fetch and setup on DOM load
+document.addEventListener('DOMContentLoaded', function () {
+    fetchDataFromAPI();
+    initializePageFromURL(); // Initialize the page based on URL parameters
+});
