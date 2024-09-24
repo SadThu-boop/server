@@ -53,4 +53,6 @@ Cài đặt dự án thông qua github
   cd server
 ```
 config pom file của dự án 
+
+Sử dụng code final.ino để nạp chương trình vào ESP8266 thông qua Arduino IDE
     
