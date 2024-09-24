@@ -28,7 +28,7 @@ function displayTableData(page) {
     paginatedData.forEach(row => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${row.id}</td>
+            <td>1</td>
             <td>${row.temperature}</td>
             <td>${row.humidity}</td>
             <td>${row.light}</td>
