@@ -30,7 +30,7 @@ Dự án sử dụng:
 - LED 
 - Dây nối
 
- Sử dụng Arduino IDE để nạp code cho 3 thiết bị lấy thông tin về nhiệt dộ, ánh sáng và độ ẩm của phòng.
+ Sử dụng Arduino IDE để nạp code cho 3 thiết bị lấy thông tin về nhiệt độ, ánh sáng và độ ẩm của phòng.
 - ESP8266
   
  ![ESP8266](https://i.imgur.com/dfNIDLRb.jpg)
