@@ -80,9 +80,9 @@
                             <label for="deviceFilter" class="form-label">Filter by Device:</label>
                             <select class="form-select" id="deviceFilter" onchange="filterByDevice()">
                                 <option value="All">All</option>
-                                <option value="air conditioner">Air Conditioner</option>
+                                <option value="ac">Air Conditioner</option>
                                 <option value="fan">Fan</option>
-                                <option value="light bulb">Light Bulb</option>
+                                <option value="light">Light Bulb</option>
                             </select>
                         </div>
 
@@ -98,8 +98,10 @@
                             </div>
                             <div>
                                 <label for="timeSearch" class="form-label">Search by Time:</label>
-                                <input type="text" id="timeSearch" class="form-control" placeholder="e.g., 2024-08-28" onkeyup="filterByTime()">
+                                <input type="text" id="timeSearch" class="form-control" placeholder="e.g., 2024-10-08 21:14:45">
+                                <button onclick="filterByTime()">Search</button>
                             </div>
+
                         </div>
                         
     

@@ -4,8 +4,6 @@ function toggleDevice(button) {
     const deviceName = deviceCard.querySelector('p').textContent.toLowerCase().trim();  // Lấy tên thiết bị và loại bỏ khoảng trắng
     let status = false;
 
-
-
     if (button.textContent === "Off") {
         button.textContent = "On";
         button.classList.remove("off");
@@ -54,10 +52,11 @@ function toggleDevice(button) {
         }
     }
 
+    // Save state to localStorage
+    localStorage.setItem(deviceName, status ? 'on' : 'off');
+
     console.log("Device Name:", deviceName);  // Thêm dòng này để kiểm tra deviceName
     console.log("Status:", status ? "on" : "off");  // Thêm dòng này để kiểm tra status
-    const topic = "home/device/" + deviceName.replace(" ", "_");  // Thay thế khoảng trắng bằng dấu gạch dưới nếu cần
-
 
     // Gửi yêu cầu Ajax để cập nhật trạng thái thiết bị
     fetch('/api/device/control', {
@@ -85,3 +84,27 @@ function toggleDevice(button) {
         deviceIcon.classList.remove("fade-in");
     }, 1000);
 }
+
+// Load device state on page load
+document.addEventListener('DOMContentLoaded', function () {
+    const devices = document.querySelectorAll('.device-card');
+    devices.forEach(device => {
+        const button = device.querySelector('button');
+        const deviceName = device.querySelector('p').textContent.toLowerCase().trim();
+        const savedState = localStorage.getItem(deviceName);
+
+        if (savedState === 'on') {
+            button.textContent = "On";
+            button.classList.remove("off");
+            button.classList.add("on");
+
+            if (deviceName.includes("fan")) {
+                device.querySelector('.device-icon').classList.add("spin");
+            } else if (deviceName.includes("air conditioner")) {
+                device.querySelector('.device-icon').src = "img/ac_on.svg";
+            } else if (deviceName.includes("light bulb")) {
+                device.querySelector('.device-icon').src = "img/bulb_on.svg";
+            }
+        }
+    });
+});

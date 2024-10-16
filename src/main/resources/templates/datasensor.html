@@ -78,7 +78,6 @@
                     <table class="table table-striped mx-auto">
                         <div class="d-flex justify-content-end mb-3">
                             <select id="searchType" class="form-select" style="width: 150px; margin-right: 10px;">
-                                <option value="time">Time</option>
                                 <option value="temperature">Temperature</option>
                                 <option value="humidity">Humidity</option>
                                 <option value="light">Light Intensity</option>
@@ -95,6 +94,11 @@
                                     <option value="20">20</option>
                                     <option value="50">50</option>
                                 </select>
+                            </div>
+                            <div>
+                                <label for="timeSearch" class="form-label">Search by Time:</label>
+                                <input type="text" id="timeSearch" class="form-control" placeholder="e.g., 2024-10-08 21:14:45">
+                                <button onclick="filterByTime()">Search</button>
                             </div>
                         </div>
 

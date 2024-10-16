@@ -3,6 +3,7 @@ package com.IoT.server.controller.api;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.IoT.server.controller.api.response.SensorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class SensorDataController {
     @Autowired
     private SensorService sensorService;
 
-    @Operation(summary = "Nhận dữ liệu từ cảm biến", description = "Nhận dữ liệu từ cảm biến và lưu vào cơ sở dữ liệu")
+
     @PostMapping("/sensor")
     public void recevieData(@RequestBody SensorData sensorData) {
         // Gọi hàm saveData từ SensorService
@@ -25,19 +26,26 @@ public class SensorDataController {
                 sensorData.getTemperature(), sensorData.getHumidity(), sensorData.getLight(), LocalDateTime.now());
     }
 
-    @Operation(
-            summary = "Lấy dữ liệu từ cảm biến",
-            description = "Lấy dữ liệu từ cảm biến đã được lưu trong cơ sở dữ liệu")
+
     @GetMapping("/sensor")
-    public List<SensorData> getAllData() {
-        return sensorService.getAllData();
+    public List<SensorResponse> getAllData() {
+        return sensorService.getSensorHistory();
     }
 
-    @Operation(
-            summary = "Lấy dữ liệu mới nhất từ cảm biến",
-            description = "Lấy dữ liệu mới nhất từ cảm biến đã được lưu trong cơ sở dữ liệu")
+
     @GetMapping("/sensor/latest")
     public SensorData getLatestData() {
         return sensorService.getLatestData();
+    }
+
+    @GetMapping("/sensor/findByTime")
+    public List<SensorData> getDataByTime(@RequestParam(required = false) String timestamp) {
+        if(timestamp !=null && !timestamp.isEmpty()) {
+            // Gọi service để tìm kiếm các bản ghi
+            return sensorService.findByTimestamp(timestamp);
+        }
+        else {
+            return sensorService.getAllData();
+        }
     }
 }

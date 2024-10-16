@@ -23,7 +23,7 @@ public class MQTTService {
     private final String clientId = "SpringClient";
     private final String sensorTopic = "data/sensor"; // Topic để nhận dữ liệu từ cảm biến
     private final String deviceTopic = "home/device/control"; // Topic để điều khiển thiết bị (đèn LED)
-    private MqttClient mqttClient; // Khởi tạo MqttClient ở cấp độ class để dùng chung
+    private MqttClient mqttClient;
 
     public MQTTService() throws MqttException {
         mqttClient = new MqttClient(broker, clientId);

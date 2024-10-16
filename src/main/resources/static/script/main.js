@@ -47,13 +47,13 @@ function updateLightProgressBar(lux) {
   if(lux > 800) {
     lightBarFill.style.backgroundColor = '#ffb400';
   } else {
-    lightBarFill.style.backgroundColor = '#cce5ff';
+    lightBarFill.style.backgroundColor = '#ffe6cc';
   }
 }
 
 // Hàm lấy dữ liệu từ API và cập nhật thanh tiến trình
 function fetchSensorData() {
-  fetch('/api/sensor/latest')  // Thay thế đường dẫn API với API thực tế của bạn
+  fetch('/api/sensor/latest')  //
     .then(response => response.json())
     .then(data => {
       // Cập nhật các thanh tiến trình với dữ liệu từ API
@@ -69,5 +69,5 @@ document.addEventListener('DOMContentLoaded', function() {
   fetchSensorData();  // Lấy dữ liệu khi trang tải
 
   // Tùy chọn: Lấy dữ liệu mới sau mỗi vài giây (ví dụ, mỗi 10 giây)
-  setInterval(fetchSensorData, 1000);  // Lấy dữ liệu mỗi 10 giây
+  setInterval(fetchSensorData, 2000);  // Lấy dữ liệu mỗi 10 giây
 });

@@ -79,4 +79,4 @@ function updateCombinedChart(sensorData) {
 }
 
 // Fetch new data every 2 seconds
-setInterval(fetchSensorData, 10000);
+setInterval(fetchSensorData, 2000);

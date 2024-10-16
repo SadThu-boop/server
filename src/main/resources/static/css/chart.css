@@ -1,16 +1,17 @@
-#charts-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-gap: 20px;
-    padding: 20px;
-}
+
 
 .chart-wrapper {
-    background-color: #ffeef0; /* Màu nền nhẹ */
+    flex: 1;
+    background-color: #ffffff; /* Màu nền nhẹ */
     border-radius: 20px;       /* Bo tròn các góc */
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
-    padding: 20px;
+    padding: 30px;
     height: 300px; /* Điều chỉnh chiều cao của container */
+}
+
+#charts-container {
+    display: flex; /* Use flexbox to align charts side by side */
+    gap: 20px; /* Add space between the charts */
 }
 
 canvas {

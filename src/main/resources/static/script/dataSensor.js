@@ -13,7 +13,7 @@ function formatTimestamp(timestamp) {
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
 
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
 }
 
 // Function to display table data based on the current page
@@ -29,8 +29,8 @@ function displayTableData(page) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>1</td>
-            <td>${row.temperature}</td>
-            <td>${row.humidity}</td>
+            <td>${row.temp}</td>
+            <td>${row.humid}</td>
             <td>${row.light}</td>
             <td>${formatTimestamp(row.timestamp)}</td>
         `;
@@ -92,14 +92,27 @@ function changePageSize() {
 
 // Function to filter data by time and update display
 function filterByTime() {
-    const timeValue = document.getElementById('searchByTime').value;
-    if (!timeValue) {
-        filteredData = [...originalData]; // Restore original data
-    } else {
-        filteredData = originalData.filter(row => row.timestamp.includes(timeValue));
-    }
-    currentPage = 1; // Reset to first page
-    applyFilters();
+    const timeValue = document.getElementById('timeSearch').value.trim();
+
+        // Tạo URL API
+        const apiUrl = timeValue ? `/api/sensor/findByTime?timestamp=${encodeURIComponent(timeValue)}` : '/api/sensor/findByTime';
+
+        // Gọi API để lấy dữ liệu từ backend
+        fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi lấy dữ liệu: ' + response.statusText);
+                }
+                return response.json(); // Chuyển đổi kết quả thành JSON
+            })
+            .then(data => {
+                filteredData = data; // Cập nhật dữ liệu đã lọc từ backend
+                currentPage = 1; // Reset về trang đầu tiên
+                applyFilters(); // Áp dụng lọc và hiển thị dữ liệu
+            })
+            .catch(error => {
+                console.error('Error fetching device data:', error);
+            });
 }
 
 // Function to apply filters and update pagination
@@ -116,14 +129,11 @@ function filterData() {
     filteredData = originalData.filter(row => {
         let cellValue;
         switch (searchType) {
-            case 'time':
-                cellValue = row.timestamp;
-                break;
             case 'temperature':
-                cellValue = row.temperature.toString();
+                cellValue = row.temp.toString();
                 break;
             case 'humidity':
-                cellValue = row.humidity.toString();
+                cellValue = row.humid.toString();
                 break;
             case 'light':
                 cellValue = row.light.toString();

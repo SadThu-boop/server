@@ -1,5 +1,7 @@
 package com.IoT.server.controller.api;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -42,7 +44,7 @@ public class DeviceController {
             summary = "Lấy danh sách thiết bị",
             description = "Trả về danh sách các thiết bị đã được ghi lại trong cơ sở dữ liệu")
     @GetMapping("/deviceHistory")
-    public List<Device> getDeviceHistory() {
+    public List<DeviceResponse> getDeviceHistory() {
         return deviceService.getDeviceHistory();
     }
 
@@ -81,7 +83,6 @@ public class DeviceController {
     }
 
 
-
     @Operation(
             summary = "Điều khiển thiết bị thông qua JSON",
             description = "Nhận yêu cầu điều khiển thiết bị từ JSON và gửi lệnh qua MQTT.")
@@ -100,6 +101,18 @@ public class DeviceController {
         mqttService.publish(topic, action);
         deviceService.recordDeviceHistory(deviceName, status);
 
-        return ResponseEntity.ok(new DeviceResponse(deviceName + " is turned " + action, deviceName, status));
+        return ResponseEntity.ok(new DeviceResponse());
     }
+
+    @GetMapping("/deviceHistoryByTime")
+    public List<Device> getDeviceHistory(@RequestParam(required = false) String timestamp) {
+        if(timestamp !=null && !timestamp.isEmpty()) {
+            // Gọi service để tìm kiếm các bản ghi
+            return deviceService.findByTimestamp(timestamp);
+        }
+        else {
+            return deviceService.getAll();
+        }
+    }
+
 }

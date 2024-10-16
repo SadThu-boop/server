@@ -19,4 +19,8 @@ public class Device {
     private boolean status;
 
     private LocalDateTime timestamp;
+
+    public boolean getStatus() {
+        return status;
+    }
 }

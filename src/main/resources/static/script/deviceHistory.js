@@ -34,7 +34,7 @@ function formatTimestamp(timestamp) {
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
 
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
 }
 
 function displayTableData(page) {
@@ -102,11 +102,35 @@ function filterByDevice() {
 
 // Hàm lọc theo thời gian
 function filterByTime() {
-    const timeValue = document.getElementById('timeSearch').value;
-    filteredData = deviceData.filter(row => row.timestamp.includes(timeValue)); // Lọc theo thời gian
-    currentPage = 1; // Reset về trang đầu tiên
-    applyFilters(); // Áp dụng lọc và hiển thị dữ liệu
+    const timeValue = document.getElementById('timeSearch').value.trim();
+
+    // Tạo URL API
+    const apiUrl = timeValue ? `/api/deviceHistoryByTime?timestamp=${encodeURIComponent(timeValue)}` : '/api/deviceHistoryByTime';
+
+    // Gọi API để lấy dữ liệu từ backend
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Lỗi khi lấy dữ liệu: ' + response.statusText);
+            }
+            return response.json(); // Chuyển đổi kết quả thành JSON
+        })
+        .then(data => {
+            filteredData = data; // Cập nhật dữ liệu đã lọc từ backend
+            currentPage = 1; // Reset về trang đầu tiên
+            applyFilters(); // Áp dụng lọc và hiển thị dữ liệu
+        })
+        .catch(error => {
+            console.error('Error fetching device data:', error);
+        });
 }
+
+// Hàm kiểm tra định dạng thời gian "yyyy/MM/dd HH:mm:ss"
+function isValidTimeFormat(timeString) {
+    const regex = /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$/;
+    return regex.test(timeString);
+}
+
 
 // Hàm áp dụng lọc và hiển thị dữ liệu
 function applyFilters() {
